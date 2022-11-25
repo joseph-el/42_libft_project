@@ -12,76 +12,40 @@
 
 #include "libft.h"
 
-static int	is_set(char const *set, char c)
+static int	found(char c, char *set)
 {
-	while (*set != '\0')
+	int	i;
+
+	i = 0;
+	while (set[i])
 	{
-		if (*set == c)
+		if (set[i] == c)
 			return (1);
-		set++;
+		i++;
 	}
 	return (0);
 }
 
-static int	ft_is_size(char const *str, char const *set)
+char	*ft_strtrim(char const *s1, char const *set)
 {
-	int	url;
-	int	i;
-	int	len;
+	int		length;
+	char	*dest;
+	size_t	i;
 
-	url = 0;
-	i = 0;
-	len = ft_strlen(str) - 1;
-	while (is_set(set, str[i++]))
-	{
-		url++;
-		if (str[url] == '\0')
-			return (0);
-	}
-	while (is_set(set, str[len]) && len >= 0)
-	{
-		url++;
-		len--;
-	}
-	return ((ft_strlen(str)) - url);
-}
-
-static int	is_stop(char const *str, char const *set)
-{
-	int	stop;
-	int	len;
-
-	stop = 0;
-	len = ft_strlen(str) - 1;
-	while (len >= 0 && is_set(set, str[len]))
-	{
-		stop++;
-		len--;
-	}
-	return (stop);
-}
-
-char	*ft_strtrim(char const *str, char const *set)
-{
-	char	*p;
-	char	*s;
-	int		i;
-
-	i = 0;
-	if (!str || !set)
+	if (s1 == 0)
 		return (NULL);
-	p = malloc(sizeof(char) * (ft_is_size(str, set) + 1));
-	if (!p)
-		return (NULL);
-	s = p;
-	while (str[i] && is_set(set, str[i]))
+	length = ft_strlen(s1);
+	i = 0;
+	while (found(s1[i], (char *)set))
 		i++;
-	while (str[i])
-	{
-		*p++ = str[i++];
-		if (str[i + is_stop(str, set)] == '\0')
-			break ;
-	}
-	*p = '\0';
-	return (s);
+	if (!s1[i])
+		return (ft_strdup(""));
+	while (found(s1[length - 1], (char *)set))
+		length--;
+	dest = (char *)malloc(sizeof(char) * ((length - i) + 1));
+	if (!dest)
+		return (NULL);
+	ft_memmove(dest, &s1[i], length - i);
+	dest[length - i] = '\0';
+	return (dest);
 }
